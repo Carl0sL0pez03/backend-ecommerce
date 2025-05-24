@@ -1,27 +1,19 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   BatchGetCommand,
   DynamoDBDocumentClient,
-  PutCommand,
   ScanCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 
 import { ProductEntity } from 'src/domain/entities';
 import { ProductRepositoryPort } from 'src/domain/ports';
+import { createClientDynamo } from '../function/auxDynamoDb.function';
 
 export class DynammoDBProductRepository implements ProductRepositoryPort {
   private client: DynamoDBDocumentClient;
 
   constructor() {
-    const dynamoDBClient = new DynamoDBClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-      },
-    });
-    this.client = DynamoDBDocumentClient.from(dynamoDBClient);
+    this.client = createClientDynamo();
   }
 
   async findAll(): Promise<ProductEntity[]> {
@@ -44,6 +36,8 @@ export class DynammoDBProductRepository implements ProductRepositoryPort {
   }
 
   async findManyByIds(ids: string[]): Promise<{ id: string; name: string }[]> {
+    if (ids?.length === 0) return [];
+
     const keys = ids.map((id) => ({ _id: id }));
     const result = await this.client.send(
       new BatchGetCommand({

@@ -1,4 +1,3 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   BatchGetCommand,
   DynamoDBDocumentClient,
@@ -8,20 +7,37 @@ import {
 
 import { DeliveryEntity } from 'src/domain/entities';
 import { DeliveryRepositoryPort } from 'src/domain/ports';
+import {
+  createClientDynamo,
+  getProductName,
+} from '../function/auxDynamoDb.function';
 
 export class DynamoDBDeliveryRepository implements DeliveryRepositoryPort {
   private client: DynamoDBDocumentClient;
 
   constructor() {
-    const baseClient = new DynamoDBClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-      },
+    this.client = createClientDynamo();
+  }
+
+  private async getProductNameMap(
+    productIds: string[],
+  ): Promise<Map<string, string>> {
+    const keys = productIds.map((id) => ({ _id: id }));
+
+    const productResult = await this.client.send(
+      new BatchGetCommand({
+        RequestItems: {
+          Products: { Keys: keys },
+        },
+      }),
+    );
+
+    const productMap = new Map<string, string>();
+    (productResult?.Responses?.Products || []).forEach((product) => {
+      productMap.set(String(product._id), String(product.name));
     });
 
-    this.client = DynamoDBDocumentClient.from(baseClient);
+    return productMap;
   }
 
   async findAllWithProductNames(): Promise<DeliveryEntity[]> {
@@ -36,27 +52,11 @@ export class DynamoDBDeliveryRepository implements DeliveryRepositoryPort {
     const productIds = [
       ...new Set(deliveries.map((delivery) => String(delivery.productId))),
     ];
-
-    const keys = productIds.map((id) => ({ _id: id }));
-
-    const productResult = await this.client.send(
-      new BatchGetCommand({
-        RequestItems: {
-          Products: {
-            Keys: keys,
-          },
-        },
-      }),
-    );
-
-    const productMap = new Map<string, string>();
-    (productResult?.Responses?.Products || []).forEach((product) => {
-      productMap.set(String(product._id), String(product.name));
-    });
+    const productMap = await this.getProductNameMap(productIds);
 
     return deliveries.map((item) => {
       const productId = String(item.productId);
-      const productName = productMap.get(productId) ?? 'Desconocido';
+      const productName = getProductName(productId, productMap);
 
       return new DeliveryEntity(
         String(item.deliveryId),

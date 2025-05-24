@@ -1,10 +1,12 @@
 import { ProductEntity } from '../entities';
+import {
+  IParamsDecreaseStock,
+  IResponseFindManyByIds,
+} from '../model/IAuxPorts.model';
 
 export interface ProductRepositoryPort {
   findAll(): Promise<ProductEntity[]>;
-  findManyByIds(ids: string[]): Promise<{ id: string; name: string }[]>;
+  findManyByIds(ids: string[]): Promise<IResponseFindManyByIds[]>;
   update(product: ProductEntity): Promise<ProductEntity>;
-  decreaseStock(
-    items: { productId: string; quantity: number }[],
-  ): Promise<void>;
+  decreaseStock(items: IParamsDecreaseStock[]): Promise<void>;
 }
