@@ -4,7 +4,6 @@ import {
   GetProductsUseCase,
   UpdateProductUseCase,
 } from 'src/application/use-cases';
-import { DynammoDBProductRepository } from 'src/infrastructure/dynamodb';
 
 @Controller('products')
 export class ProductController {

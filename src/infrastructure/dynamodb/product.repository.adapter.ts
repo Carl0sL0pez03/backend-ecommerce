@@ -67,26 +67,6 @@ export class DynammoDBProductRepository implements ProductRepositoryPort {
     return product;
   }
 
-  async assignToCustomer(
-    orderId: string,
-    items: { productId: string; quantity: number }[],
-  ): Promise<void> {
-    for (const item of items) {
-      await this.client.send(
-        new PutCommand({
-          TableName: 'Deliveries',
-          Item: {
-            deliveryId: `${orderId}_${item.productId}`,
-            orderId: orderId,
-            productId: item.productId,
-            quantity: item.quantity,
-            deliveredAt: new Date().toISOString(),
-          },
-        }),
-      );
-    }
-  }
-
   async decreaseStock(
     items: { productId: string; quantity: number }[],
   ): Promise<void> {
