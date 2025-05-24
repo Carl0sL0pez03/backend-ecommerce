@@ -5,6 +5,6 @@ export class DeliveryEntity {
     public readonly orderId: string,
     public readonly productId: string,
     public readonly quantity: number,
-    public readonly productName?: string,
+    public readonly productName?: string, 
   ) {}
 }
