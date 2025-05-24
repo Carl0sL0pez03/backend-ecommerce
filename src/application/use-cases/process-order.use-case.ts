@@ -11,6 +11,8 @@ import {
 } from 'src/domain/ports';
 import { TransactionStatus } from 'src/domain/enum/TransactionStatus.enum';
 import { IOrderParams } from '../model/IOrderParams.model';
+import { IResponse } from '../model/IResponse.model';
+import { maskCard } from '../function/aux-use-cases.function';
 
 export class ProcessOrderUseCase {
   constructor(
@@ -24,13 +26,9 @@ export class ProcessOrderUseCase {
     private readonly deliveryRepo: DeliveryRepositoryPort,
   ) {}
 
-  async execute(
-    order: IOrderParams,
-  ): Promise<{ success: boolean; data?: TransactionEntity; error?: string }> {
+  async execute(order: IOrderParams): Promise<IResponse<TransactionEntity>> {
     const transactionId = uuidv4();
-    const maskedCard = order.payment.cardNumber
-      .replace(/\D/g, '')
-      .replace(/.(?=.{4})/g, '*');
+    const maskedCard = maskCard(order.payment.cardNumber);
 
     const transaction = new TransactionEntity(
       transactionId,
@@ -87,7 +85,7 @@ export class ProcessOrderUseCase {
       );
       return {
         success: false,
-        error: 'Unexpected error processing transaction',
+        error: error?.message || 'Unexpected error processing transaction',
       };
     }
   }

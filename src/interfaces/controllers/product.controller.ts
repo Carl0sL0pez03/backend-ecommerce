@@ -4,6 +4,7 @@ import {
   GetProductsUseCase,
   UpdateProductUseCase,
 } from 'src/application/use-cases';
+import { IProductRaw } from '../model/ITransaction.model';
 
 @Controller('products')
 export class ProductController {
@@ -24,13 +25,7 @@ export class ProductController {
   @Put('updateProduct')
   async updateProduct(
     @Body()
-    body: {
-      _id: string;
-      name: string;
-      price: number;
-      stock: number;
-      urlImg: string;
-    },
+    body: IProductRaw,
   ) {
     const result = await this.updateProductUseCase.execute(body);
     if (result.success) return result.data;

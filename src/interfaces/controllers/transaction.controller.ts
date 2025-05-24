@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
+import { IOrderParams } from 'src/application/model/IOrderParams.model';
 import {
   GetTransactionsUseCase,
   ProcessOrderUseCase,
@@ -12,14 +13,14 @@ export class TransactionController {
     private readonly getTransactionsUseCase: GetTransactionsUseCase,
   ) {}
 
-  @Get("getAll")
+  @Get('getAll')
   async findAll() {
     const result = await this.getTransactionsUseCase.execute();
     return result.success ? result.data : { error: result.error };
   }
 
   @Post('create')
-  async create(@Body() order: any) {
+  async create(@Body() order: IOrderParams) {
     const result = await this.processOrderUseCase.execute(order);
     if (result.success) return result.data;
     return { error: result.error };

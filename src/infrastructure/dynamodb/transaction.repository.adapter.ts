@@ -1,6 +1,5 @@
 import { Inject } from '@nestjs/common';
 
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
@@ -13,6 +12,10 @@ import {
   ProductRepositoryPort,
   TransactionRepositoryPort,
 } from 'src/domain/ports';
+import {
+  createClientDynamo,
+  getProductName,
+} from '../function/auxDynamoDb.function';
 
 export class DynamoDBTransactionRepository
   implements TransactionRepositoryPort
@@ -23,19 +26,25 @@ export class DynamoDBTransactionRepository
     @Inject('ProductRepositoryPort')
     private readonly productRepo: ProductRepositoryPort,
   ) {
-    const dynamoDBClient = new DynamoDBClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-      },
-    });
-
-    this.client = DynamoDBDocumentClient.from(dynamoDBClient, {
+    this.client = createClientDynamo({
       marshallOptions: {
         convertClassInstanceToMap: true,
       },
     });
+  }
+
+  private async buildProductMap(
+    transactions: any[],
+  ): Promise<Map<string, string>> {
+    const productIds = new Set<string>();
+    for (const transaction of transactions) {
+      for (const item of transaction.items || []) {
+        productIds.add(item?.productId);
+      }
+    }
+
+    const products = await this.productRepo.findManyByIds([...productIds]);
+    return new Map(products.map((p) => [p.id, p.name]));
   }
 
   async findAll(): Promise<TransactionEntity[]> {
@@ -47,23 +56,13 @@ export class DynamoDBTransactionRepository
 
     const transactions = result?.Items || [];
 
-    const productIds = new Set<string>();
-    for (const transaction of transactions) {
-      for (const item of transaction.items || []) {
-        productIds.add(item?.productId);
-      }
-    }
-
-    const products = await this.productRepo.findManyByIds([...productIds]);
-    const productMap = new Map(
-      products.map((product) => [product.id, product.name]),
-    );
+    const productMap = await this.buildProductMap(transactions);
 
     return transactions.map((item) => {
       const itemsWithNames = item.items.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        productName: productMap.get(item.productId) ?? 'Desconocido',
+        productName: getProductName(item.productId, productMap),
       }));
 
       return new TransactionEntity(

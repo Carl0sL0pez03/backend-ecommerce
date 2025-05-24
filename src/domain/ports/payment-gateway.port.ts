@@ -1,15 +1,10 @@
+import {
+  IParamsPaymentGatewayPort,
+  IResponsePaymentGatewayPort,
+} from '../model/IAuxPorts.model';
+
 export interface PaymentGatewayPort {
-  charge(params: {
-    amount: number;
-    cardNumber: string;
-    expiry: string;
-    cvc: string;
-    cardHolder: string;
-    customerEmail: string;
-    installments: number;
-  }): Promise<{
-    success: boolean;
-    transactionId?: string;
-    result: any;
-  }>;
+  charge(
+    params: IParamsPaymentGatewayPort,
+  ): Promise<IResponsePaymentGatewayPort>;
 }

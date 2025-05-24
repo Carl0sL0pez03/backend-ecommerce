@@ -1,7 +1,8 @@
 import { Inject } from '@nestjs/common';
-import { TransactionEntity } from 'src/domain/entities';
 
+import { TransactionEntity } from 'src/domain/entities';
 import { TransactionRepositoryPort } from 'src/domain/ports';
+import { IResponse } from '../model/IResponse.model';
 
 export class GetTransactionsUseCase {
   constructor(
@@ -9,11 +10,7 @@ export class GetTransactionsUseCase {
     private readonly transactionRepo: TransactionRepositoryPort,
   ) {}
 
-  async execute(): Promise<{
-    success: boolean;
-    data?: Partial<TransactionEntity>[];
-    error?: string;
-  }> {
+  async execute(): Promise<IResponse<Partial<TransactionEntity>>> {
     try {
       const transactions = await this.transactionRepo.findAll();
 
@@ -33,7 +30,10 @@ export class GetTransactionsUseCase {
 
       return { success: true, data: filtered };
     } catch (error) {
-      return { success: false, error: 'Could not retrieve transactions' };
+      return {
+        success: false,
+        error: error?.message || 'Could not retrieve transactions',
+      };
     }
   }
 }
