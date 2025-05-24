@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
+  BatchGetCommand,
   DynamoDBDocumentClient,
   PutCommand,
   ScanCommand,
@@ -40,6 +41,24 @@ export class DynammoDBProductRepository implements ProductRepositoryPort {
           String(product?.urlImg),
         ),
     );
+  }
+
+  async findManyByIds(ids: string[]): Promise<{ id: string; name: string }[]> {
+    const keys = ids.map((id) => ({ _id: id }));
+    const result = await this.client.send(
+      new BatchGetCommand({
+        RequestItems: {
+          Products: {
+            Keys: keys,
+          },
+        },
+      }),
+    );
+
+    return (result?.Responses?.Products || []).map((item) => ({
+      id: String(item._id),
+      name: String(item.name),
+    }));
   }
 
   async update(product: ProductEntity): Promise<ProductEntity> {

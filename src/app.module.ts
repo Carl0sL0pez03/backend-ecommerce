@@ -11,7 +11,8 @@ import {
   GetProductsUseCase,
   ProcessOrderUseCase,
   UpdateProductUseCase,
-  GetDeliveriesUseCase
+  GetDeliveriesUseCase,
+  GetTransactionsUseCase,
 } from './application/use-cases';
 import {
   DynammoDBProductRepository,
@@ -44,6 +45,7 @@ import { WompiGatewayAdapter } from './infrastructure/external/wompi.gateway.ada
     GetProductsUseCase,
     UpdateProductUseCase,
     GetDeliveriesUseCase,
+    GetTransactionsUseCase,
   ],
 })
 export class AppModule {}

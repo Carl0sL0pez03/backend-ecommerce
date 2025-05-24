@@ -27,8 +27,11 @@ export class UpdateProductUseCase {
 
       const updated = await this.productRepo.update(product);
       return { success: true, data: updated };
-    } catch (e) {
-      return { success: false, error: 'Failed to update product.' };
+    } catch (error) {
+      return {
+        success: false,
+        error: error?.message || 'Failed to update product.',
+      };
     }
   }
 }

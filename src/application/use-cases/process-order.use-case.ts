@@ -78,8 +78,6 @@ export class ProcessOrderUseCase {
 
       return { success: true, data: transaction };
     } catch (error) {
-      console.log(error);
-
       await this.transactionRepo.updateStatus(
         transactionId,
         TransactionStatus.FAILED,
