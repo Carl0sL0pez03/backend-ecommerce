@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { TransactionEntity } from 'src/domain/entities';
 import {
+  DeliveryRepositoryPort,
   PaymentGatewayPort,
   ProductRepositoryPort,
   TransactionRepositoryPort,
@@ -19,6 +20,8 @@ export class ProcessOrderUseCase {
     private readonly paymentGateway: PaymentGatewayPort,
     @Inject('ProductRepositoryPort')
     private readonly productRepo: ProductRepositoryPort,
+    @Inject('DeliveryRepositoryPort')
+    private readonly deliveryRepo: DeliveryRepositoryPort,
   ) {}
 
   async execute(
@@ -69,7 +72,7 @@ export class ProcessOrderUseCase {
           TransactionStatus.COMPLETED,
           paymentResult?.result?.data,
         ),
-        this.productRepo.assignToCustomer(transactionId, order.items),
+        this.deliveryRepo.assignToCustomer(transactionId, order.items),
         this.productRepo.decreaseStock(order.items),
       ]);
 
