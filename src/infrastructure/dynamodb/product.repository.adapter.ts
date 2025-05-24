@@ -5,8 +5,8 @@ import {
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 
-import { ProductEntity } from 'src/domain/entities';
-import { ProductRepositoryPort } from 'src/domain/ports';
+import { ProductEntity } from '../../domain/entities';
+import { ProductRepositoryPort } from '../../domain/ports';
 import { createClientDynamo } from '../function/auxDynamoDb.function';
 
 export class DynammoDBProductRepository implements ProductRepositoryPort {

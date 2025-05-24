@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { GetDeliveriesUseCase } from 'src/application/use-cases/get-deliveries.use-case';
+import { GetDeliveriesUseCase } from '../../application/use-cases/get-deliveries.use-case';
 
 @Controller('deliveries')
 export class DeliveryController {

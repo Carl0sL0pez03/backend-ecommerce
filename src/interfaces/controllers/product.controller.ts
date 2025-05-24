@@ -3,7 +3,7 @@ import { Body, Controller, Get, Put } from '@nestjs/common';
 import {
   GetProductsUseCase,
   UpdateProductUseCase,
-} from 'src/application/use-cases';
+} from '../../application/use-cases';
 import { IProductRaw } from '../model/ITransaction.model';
 
 @Controller('products')

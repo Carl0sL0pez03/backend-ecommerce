@@ -2,14 +2,14 @@ import { Inject } from '@nestjs/common';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { TransactionEntity } from 'src/domain/entities';
+import { TransactionEntity } from '../../domain/entities';
 import {
   DeliveryRepositoryPort,
   PaymentGatewayPort,
   ProductRepositoryPort,
   TransactionRepositoryPort,
-} from 'src/domain/ports';
-import { TransactionStatus } from 'src/domain/enum/TransactionStatus.enum';
+} from '../../domain/ports';
+import { TransactionStatus } from '../../domain/enum/TransactionStatus.enum';
 import { IOrderParams } from '../model/IOrderParams.model';
 import { IResponse } from '../model/IResponse.model';
 import { maskCard } from '../function/aux-use-cases.function';

@@ -5,8 +5,8 @@ import {
   ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
 
-import { DeliveryEntity } from 'src/domain/entities';
-import { DeliveryRepositoryPort } from 'src/domain/ports';
+import { DeliveryEntity } from '../../domain/entities';
+import { DeliveryRepositoryPort } from '../../domain/ports';
 import {
   createClientDynamo,
   getProductName,

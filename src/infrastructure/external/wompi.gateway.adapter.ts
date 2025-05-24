@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as crypto from 'crypto';
 
-import { PaymentGatewayPort } from 'src/domain/ports';
+import { PaymentGatewayPort } from '../../domain/ports';
 import { IChargeParams } from './model/IChargeParams.model';
 
 export class WompiGatewayAdapter implements PaymentGatewayPort {
