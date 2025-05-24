@@ -1,6 +1,6 @@
 import { DynamoDBDeliveryRepository } from './devilery.repository.adapter';
 import { DynamoDBTransactionRepository } from './transaction.repository.adapter';
-import { DynammoDBProductRepository } from 'src/infrastructure/dynamodb/product.repository.adapter';
+import { DynammoDBProductRepository } from '../../infrastructure/dynamodb/product.repository.adapter';
 
 export {
   DynammoDBProductRepository,

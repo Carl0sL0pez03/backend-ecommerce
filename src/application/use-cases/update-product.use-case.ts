@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
 
-import { ProductEntity } from 'src/domain/entities';
-import { ProductRepositoryPort } from 'src/domain/ports';
+import { ProductEntity } from '../../domain/entities';
+import { ProductRepositoryPort } from '../../domain/ports';
 import { IResponse } from '../model/IResponse.model';
-import { IProductRaw } from 'src/interfaces/model/ITransaction.model';
+import { IProductRaw } from '../../interfaces/model/ITransaction.model';
 
 export class UpdateProductUseCase {
   constructor(

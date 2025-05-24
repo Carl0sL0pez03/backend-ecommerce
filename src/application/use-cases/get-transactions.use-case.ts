@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 
-import { TransactionEntity } from 'src/domain/entities';
-import { TransactionRepositoryPort } from 'src/domain/ports';
+import { TransactionEntity } from '../../domain/entities';
+import { TransactionRepositoryPort } from '../../domain/ports';
 import { IResponse } from '../model/IResponse.model';
 
 export class GetTransactionsUseCase {

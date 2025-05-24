@@ -7,11 +7,11 @@ import {
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 
-import { TransactionEntity } from 'src/domain/entities';
+import { TransactionEntity } from '../../domain/entities';
 import {
   ProductRepositoryPort,
   TransactionRepositoryPort,
-} from 'src/domain/ports';
+} from '../../domain/ports';
 import {
   createClientDynamo,
   getProductName,

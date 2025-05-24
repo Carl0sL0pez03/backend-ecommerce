@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 
-import { DeliveryEntity } from 'src/domain/entities';
-import { DeliveryRepositoryPort } from 'src/domain/ports';
+import { DeliveryEntity } from '../../domain/entities';
+import { DeliveryRepositoryPort } from '../../domain/ports';
 import { IResponse } from '../model/IResponse.model';
 
 export class GetDeliveriesUseCase {

@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
-import { IOrderParams } from 'src/application/model/IOrderParams.model';
+import { IOrderParams } from '../../application/model/IOrderParams.model';
 import {
   GetTransactionsUseCase,
   ProcessOrderUseCase,
-} from 'src/application/use-cases';
+} from '../../application/use-cases';
 
 @Controller('transactions')
 export class TransactionController {
