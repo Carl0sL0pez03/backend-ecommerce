@@ -5,4 +5,5 @@ export interface IChargeParams {
   cvc: string;
   cardHolder: string;
   customerEmail: string;
+  installments: number
 }

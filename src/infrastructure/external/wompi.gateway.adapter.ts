@@ -12,7 +12,7 @@ export class WompiGatewayAdapter implements PaymentGatewayPort {
       const [exp_month, exp_year] = params.expiry.split('/');
 
       const acceptanceRes = await axios.get(
-        `https://api.co.uat.wompi.dev/v1/merchants/${process.env.WOMPI_PUBLIC_KEY}`,
+        `${process.env.WOMPI_API_RUL}merchants/${process.env.WOMPI_PUBLIC_KEY}`,
       );
 
       const acceptance_token =
@@ -23,7 +23,7 @@ export class WompiGatewayAdapter implements PaymentGatewayPort {
       }
 
       const tokenResponse = await axios.post(
-        'https://api.co.uat.wompi.dev/v1/tokens/cards',
+        `${process.env.WOMPI_API_RUL}tokens/cards`,
         {
           number: params.cardNumber,
           cvc: params.cvc,
@@ -60,7 +60,7 @@ export class WompiGatewayAdapter implements PaymentGatewayPort {
         .digest('hex');
 
       const response = await axios.post(
-        'https://api.co.uat.wompi.dev/v1/transactions',
+        `${process.env.WOMPI_API_RUL}transactions`,
         {
           amount_in_cents: amountInCents,
           currency: currency,
@@ -68,7 +68,7 @@ export class WompiGatewayAdapter implements PaymentGatewayPort {
           payment_method: {
             type: 'CARD',
             token,
-            installments: 1,
+            installments: params?.installments || 1,
           },
           reference,
           acceptance_token,
