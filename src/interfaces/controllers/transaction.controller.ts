@@ -1,10 +1,22 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
-import { ProcessOrderUseCase } from 'src/application/use-cases';
+import {
+  GetTransactionsUseCase,
+  ProcessOrderUseCase,
+} from 'src/application/use-cases';
 
 @Controller('transactions')
 export class TransactionController {
-  constructor(private readonly processOrderUseCase: ProcessOrderUseCase) {}
+  constructor(
+    private readonly processOrderUseCase: ProcessOrderUseCase,
+    private readonly getTransactionsUseCase: GetTransactionsUseCase,
+  ) {}
+
+  @Get("getAll")
+  async findAll() {
+    const result = await this.getTransactionsUseCase.execute();
+    return result.success ? result.data : { error: result.error };
+  }
 
   @Post('create')
   async create(@Body() order: any) {
