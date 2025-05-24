@@ -4,18 +4,14 @@ import {
   GetProductsUseCase,
   UpdateProductUseCase,
 } from 'src/application/use-cases';
-import { DynammoDBProductRepository } from 'src/infrastructure/dynamodb/product.repository.adapter';
+import { DynammoDBProductRepository } from 'src/infrastructure/dynamodb';
 
 @Controller('products')
 export class ProductController {
-  private readonly getProductsUseCase: GetProductsUseCase;
-  private readonly updateProductUseCase: UpdateProductUseCase;
-
-  constructor() {
-    const productRepo = new DynammoDBProductRepository();
-    this.getProductsUseCase = new GetProductsUseCase(productRepo);
-    this.updateProductUseCase = new UpdateProductUseCase(productRepo);
-  }
+  constructor(
+    private readonly getProductsUseCase: GetProductsUseCase,
+    private readonly updateProductUseCase: UpdateProductUseCase,
+  ) {}
 
   @Get('getAll')
   async getAll() {

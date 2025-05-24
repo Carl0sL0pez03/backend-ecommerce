@@ -1,9 +1,13 @@
-import { ProductRepositoryPort } from '../../domain/ports/product.repository.port';
-import { ProductEntity } from '../../domain/entities/product.entity';
-import { error } from 'console';
+import { Inject } from '@nestjs/common';
+
+import { ProductEntity } from 'src/domain/entities';
+import { ProductRepositoryPort } from 'src/domain/ports';
 
 export class UpdateProductUseCase {
-  constructor(private readonly productRepo: ProductRepositoryPort) {}
+  constructor(
+    @Inject('ProductRepositoryPort')
+    private readonly productRepo: ProductRepositoryPort,
+  ) {}
 
   async execute(input: {
     _id: string;
@@ -20,13 +24,10 @@ export class UpdateProductUseCase {
         input.stock,
         input.urlImg,
       );
-      console.log("product", product);
-      
+
       const updated = await this.productRepo.update(product);
       return { success: true, data: updated };
     } catch (e) {
-      console.log(error);
-      
       return { success: false, error: 'Failed to update product.' };
     }
   }

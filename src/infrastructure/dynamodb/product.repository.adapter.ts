@@ -1,12 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
+  PutCommand,
   ScanCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { ProductEntity } from 'src/domain/entities/product.entity';
 
-import { ProductRepositoryPort } from 'src/domain/ports/product.repository.port';
+import { ProductEntity } from 'src/domain/entities';
+import { ProductRepositoryPort } from 'src/domain/ports';
 
 export class DynammoDBProductRepository implements ProductRepositoryPort {
   private client: DynamoDBDocumentClient;
@@ -64,5 +65,45 @@ export class DynammoDBProductRepository implements ProductRepositoryPort {
     );
 
     return product;
+  }
+
+  async assignToCustomer(
+    orderId: string,
+    items: { productId: string; quantity: number }[],
+  ): Promise<void> {
+    for (const item of items) {
+      await this.client.send(
+        new PutCommand({
+          TableName: 'Deliveries',
+          Item: {
+            deliveryId: `${orderId}_${item.productId}`,
+            orderId: orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+            deliveredAt: new Date().toISOString(),
+          },
+        }),
+      );
+    }
+  }
+
+  async decreaseStock(
+    items: { productId: string; quantity: number }[],
+  ): Promise<void> {
+    for (const item of items) {
+      await this.client.send(
+        new UpdateCommand({
+          TableName: 'Products',
+          Key: { _id: item.productId },
+          UpdateExpression: 'SET #stock = #stock - :qty',
+          ExpressionAttributeNames: {
+            '#stock': 'stock',
+          },
+          ExpressionAttributeValues: {
+            ':qty': item.quantity,
+          },
+        }),
+      );
+    }
   }
 }
