@@ -10,6 +10,7 @@ export interface IOrderParams {
     expiry: string;
     cvc: string;
     cardHolder: string;
+    installments: number
   };
   items: { productId: string; quantity: number }[];
   total: number;

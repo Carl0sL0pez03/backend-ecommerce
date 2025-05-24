@@ -48,6 +48,7 @@ export class ProcessOrderUseCase {
         cvc: order.payment.cvc,
         cardHolder: order?.payment?.cardHolder,
         customerEmail: order?.customer?.email,
+        installments: order?.payment?.installments,
       });
 
       if (!paymentResult.success) {
@@ -56,7 +57,10 @@ export class ProcessOrderUseCase {
           TransactionStatus.FAILED,
           paymentResult?.result?.data,
         );
-        return { success: false, error: 'Payment failed' };
+        return {
+          success: false,
+          error: paymentResult?.result || 'Payment failed',
+        };
       }
 
       await Promise.allSettled([
@@ -71,6 +75,8 @@ export class ProcessOrderUseCase {
 
       return { success: true, data: transaction };
     } catch (error) {
+      console.log(error);
+
       await this.transactionRepo.updateStatus(
         transactionId,
         TransactionStatus.FAILED,

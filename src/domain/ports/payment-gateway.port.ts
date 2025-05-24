@@ -6,6 +6,7 @@ export interface PaymentGatewayPort {
     cvc: string;
     cardHolder: string;
     customerEmail: string;
+    installments: number;
   }): Promise<{
     success: boolean;
     transactionId?: string;
