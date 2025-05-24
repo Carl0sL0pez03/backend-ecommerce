@@ -1,4 +1,4 @@
-import { TransactionStatus } from '../../domain/enum/TransactionStatus.enum';
+import { transactionStatus } from '../../domain/enum/transactionStatus.enum';
 import { ProcessOrderUseCase } from './process-order.use-case';
 
 describe('ProcessOrderUseCase', () => {
@@ -57,7 +57,7 @@ describe('ProcessOrderUseCase', () => {
     expect(result.success).toBe(true);
     expect(mockTransactionRepo.updateStatus).toHaveBeenCalledWith(
       expect.any(String),
-      TransactionStatus.COMPLETED,
+      transactionStatus.COMPLETED,
       { transactionId: '123' },
     );
   });

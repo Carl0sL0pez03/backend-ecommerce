@@ -1,4 +1,4 @@
-export enum TransactionStatus {
+export enum transactionStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',

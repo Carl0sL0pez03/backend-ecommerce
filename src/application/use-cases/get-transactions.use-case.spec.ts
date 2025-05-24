@@ -1,6 +1,6 @@
 import { GetTransactionsUseCase } from './get-transactions.use-case';
 import { TransactionEntity } from '../../domain/entities';
-import { TransactionStatus } from '../../domain/enum/TransactionStatus.enum';
+import { transactionStatus } from '../../domain/enum/transactionStatus.enum';
 
 describe('GetTransactionsUseCase', () => {
   const mockTransactionRepo = {
@@ -20,7 +20,7 @@ describe('GetTransactionsUseCase', () => {
           { productId: 'p2', quantity: 2 },
         ],
         3000,
-        TransactionStatus.COMPLETED,
+        transactionStatus.COMPLETED,
         'txn_123',
         {
           payment_method: {

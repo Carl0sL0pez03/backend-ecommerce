@@ -9,7 +9,7 @@ jest.mock('../function/auxDynamoDb.function', () => ({
     map.get(id) ?? 'Desconocido',
 }));
 
-import { TransactionStatus } from '../../domain/enum/TransactionStatus.enum';
+import { transactionStatus } from '../../domain/enum/transactionStatus.enum';
 import { TransactionEntity } from '../../domain/entities';
 import { DynamoDBTransactionRepository } from './transaction.repository.adapter';
 
@@ -54,7 +54,7 @@ describe('DynamoDBTransactionRepository', () => {
       { maskedCard: '****5678', expiry: '11/24' },
       [{ productId: 'p2', quantity: 2 }],
       5000,
-      TransactionStatus.PENDING,
+      transactionStatus.PENDING,
     );
 
     const repo = new DynamoDBTransactionRepository(mockProductRepo as any);

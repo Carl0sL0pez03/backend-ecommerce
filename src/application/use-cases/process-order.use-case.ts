@@ -9,7 +9,7 @@ import {
   ProductRepositoryPort,
   TransactionRepositoryPort,
 } from '../../domain/ports';
-import { TransactionStatus } from '../../domain/enum/TransactionStatus.enum';
+import { transactionStatus } from '../../domain/enum/transactionStatus.enum';
 import { IOrderParams } from '../model/IOrderParams.model';
 import { IResponse } from '../model/IResponse.model';
 import { maskCard } from '../function/aux-use-cases.function';
@@ -36,7 +36,7 @@ export class ProcessOrderUseCase {
       { maskedCard, expiry: order.payment.expiry },
       order.items,
       order.total,
-      TransactionStatus.PENDING,
+      transactionStatus.PENDING,
     );
 
     try {
@@ -55,7 +55,7 @@ export class ProcessOrderUseCase {
       if (!paymentResult.success) {
         await this.transactionRepo.updateStatus(
           transactionId,
-          TransactionStatus.FAILED,
+          transactionStatus.FAILED,
           paymentResult?.result?.data,
         );
         return {
@@ -67,7 +67,7 @@ export class ProcessOrderUseCase {
       await Promise.allSettled([
         this.transactionRepo.updateStatus(
           transactionId,
-          TransactionStatus.COMPLETED,
+          transactionStatus.COMPLETED,
           paymentResult?.result?.data,
         ),
         this.deliveryRepo.assignToCustomer(transactionId, order.items),
@@ -78,7 +78,7 @@ export class ProcessOrderUseCase {
     } catch (error) {
       await this.transactionRepo.updateStatus(
         transactionId,
-        TransactionStatus.FAILED,
+        transactionStatus.FAILED,
         {
           error,
         },
