@@ -4,7 +4,22 @@ import * as crypto from 'crypto';
 import { PaymentGatewayPort } from '../../domain/ports';
 import { IChargeParams } from './model/IChargeParams.model';
 
+/**
+ * WompiGatewayAdapter is a concrete implementation of the PaymentGatewayPort.
+ * It integrates with the Wompi API to tokenize card information and create transactions.
+ */
 export class WompiGatewayAdapter implements PaymentGatewayPort {
+  /**
+   * Executes a payment using Wompi's API by first retrieving an acceptance token,
+   * then tokenizing the card, and finally creating a transaction.
+   *
+   * @param {IChargeParams} params - The payment details including card info, amount, and customer.
+   * @returns {Promise<{ success: boolean; transactionId?: string; result: any }>} - The result of the payment operation.
+   *
+   * success: Indicates whether the payment was successful.
+   * transactionId: The ID of the transaction (if successful).
+   * result: Full response data or error message from Wompi.
+   */
   async charge(
     params: IChargeParams,
   ): Promise<{ success: boolean; transactionId?: string; result: any }> {
