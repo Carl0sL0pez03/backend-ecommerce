@@ -21,6 +21,21 @@ import {
 } from './infrastructure/dynamodb';
 import { WompiGatewayAdapter } from './infrastructure/external/wompi.gateway.adapter';
 
+/**
+ * AppModule is the root module of the application.
+ *
+ * It sets up the configuration module globally and registers all controllers and providers
+ * required by the application. It follows the Hexagonal Architecture pattern using Ports and Adapters.
+ *
+ * ## Controllers
+ * - `ProductController`: Handles product-related HTTP endpoints.
+ * - `TransactionController`: Handles transaction processing and listing.
+ * - `DeliveryController`: Handles delivery-related endpoints.
+ *
+ * ## Providers (Dependency Injection)
+ * - Binds each repository port to its corresponding infrastructure adapter.
+ * - Registers all use cases used by the controllers.
+ */
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
   controllers: [ProductController, TransactionController, DeliveryController],

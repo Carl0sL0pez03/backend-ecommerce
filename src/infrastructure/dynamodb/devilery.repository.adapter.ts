@@ -12,13 +12,28 @@ import {
   getProductName,
 } from '../function/auxDynamoDb.function';
 
+/**
+ * DynamoDB implementation of the DeliveryRepositoryPort.
+ *
+ * This class handles persistence and retrieval of delivery data from AWS DynamoDB.
+ */
 export class DynamoDBDeliveryRepository implements DeliveryRepositoryPort {
   private client: DynamoDBDocumentClient;
 
+  /**
+   * Initializes the DynamoDBDocumentClient with default settings for interacting with DynamoDB.
+   */
   constructor() {
     this.client = createClientDynamo();
   }
 
+  /**
+   * Retrieves a map of product IDs to product names from the 'Products' table.
+   *
+   * @private
+   * @param {string[]} productIds - An array of product IDs to fetch.
+   * @returns {Promise<Map<string, string>>} A promise that resolves to a map of productId → productName.
+   */
   private async getProductNameMap(
     productIds: string[],
   ): Promise<Map<string, string>> {
@@ -40,6 +55,11 @@ export class DynamoDBDeliveryRepository implements DeliveryRepositoryPort {
     return productMap;
   }
 
+  /**
+   * Retrieves all deliveries from the 'Deliveries' table and adds product names to them.
+   *
+   * @returns {Promise<DeliveryEntity[]>} A promise that resolves to a list of DeliveryEntity with product names included.
+   */
   async findAllWithProductNames(): Promise<DeliveryEntity[]> {
     const result = await this.client.send(
       new ScanCommand({
@@ -69,6 +89,13 @@ export class DynamoDBDeliveryRepository implements DeliveryRepositoryPort {
     });
   }
 
+  /**
+   * Creates delivery records in the 'Deliveries' table for each product item in the order.
+   *
+   * @param {string} orderId - The ID of the order.
+   * @param {Array<{ productId: string; quantity: number }>} items - List of products and quantities to assign.
+   * @returns {Promise<void>} A promise that resolves when all delivery records have been written.
+   */
   async assignToCustomer(
     orderId: string,
     items: { productId: string; quantity: number }[],

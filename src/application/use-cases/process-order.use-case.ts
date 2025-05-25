@@ -14,7 +14,23 @@ import { IOrderParams } from '../model/IOrderParams.model';
 import { IResponse } from '../model/IResponse.model';
 import { maskCard } from '../function/aux-use-cases.function';
 
+/**
+ * Use case for processing an order end-to-end.
+ *
+ * This class coordinates the transaction creation, payment processing,
+ * delivery assignment, and product stock update.
+ * It adheres to Hexagonal Architecture and applies the principles of
+ * Railway Oriented Programming (ROP) to manage success/failure flows.
+ */
 export class ProcessOrderUseCase {
+  /**
+   * Constructor to inject required repositories and services (Ports).
+   *
+   * @param {TransactionRepositoryPort} transactionRepo - Port to handle transaction persistence.
+   * @param {PaymentGatewayPort} paymentGateway - Port to integrate with the payment provider (e.g., Wompi).
+   * @param {ProductRepositoryPort} productRepo - Port to manage product inventory.
+   * @param {DeliveryRepositoryPort} deliveryRepo - Port to assign product deliveries to customers.
+   */
   constructor(
     @Inject('TransactionRepositoryPort')
     private readonly transactionRepo: TransactionRepositoryPort,
@@ -26,6 +42,15 @@ export class ProcessOrderUseCase {
     private readonly deliveryRepo: DeliveryRepositoryPort,
   ) {}
 
+  /**
+   * Executes the order processing logic:
+   * 1. Creates a transaction with status PENDING.
+   * 2. Processes the payment via the payment gateway.
+   * 3. Updates the transaction status and, if successful, assigns deliveries and reduces stock.
+   *
+   * @param {IOrderParams} order - The order data including customer, payment, and product items.
+   * @returns {Promise<IResponse<TransactionEntity>>} A response with the transaction or an error message.
+   */
   async execute(order: IOrderParams): Promise<IResponse<TransactionEntity>> {
     const transactionId = uuidv4();
     const maskedCard = maskCard(order.payment.cardNumber);
